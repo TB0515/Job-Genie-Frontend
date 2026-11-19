@@ -59,9 +59,38 @@ const WishlistGenerator = () => {
 	const [error, setError] = useState(false);
 	const [wishlistCompanies, setWishlistCompanies] = useState<Company[]>([]);
 	const [jobsByCompany, setJobsByCompany] = useState<{ company: string; jobs: TheirStackJob[] }[]>([]);
+	const [jobsError, setJobsError] = useState(false);
 	const [roleKeywords, setRoleKeywords] = useState('software engineer, developer');
 	const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
 	const [isJobsModalOpen, setIsJobsModalOpen] = useState(false);
+
+	const fetchJobs = async (companies: Company[]) => {
+		setJobsError(false);
+		const roleKeywordsArray = roleKeywords.split(',').map((kw) => kw.trim()).filter(Boolean);
+		try {
+			const jobsRes = await fetch(`${API_BASE_URL}/jobs`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json'},
+				credentials: 'include',
+				body: JSON.stringify({
+					postedAt: 7,
+					companies,
+                    jobTitles: roleKeywordsArray,
+                    remote: null,
+				}),
+			});
+			const jobsData: JobsByWishlistResponse = await jobsRes.json();
+			if (jobsRes.ok && jobsData.success && Array.isArray(jobsData.results)) {
+				setJobsByCompany(jobsData.results);
+			} else {
+				console.error('Failed to fetch jobs:', jobsData);
+				setJobsError(true);
+			}
+		} catch (err) {
+			console.error('Error fetching jobs:', err);
+            setJobsError(true);
+		}
+	};
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
@@ -100,34 +129,10 @@ const WishlistGenerator = () => {
 
 				// Update state with companies
 				setWishlistCompanies(data.companies);
-				const roleKeywordsArray = roleKeywords.split(',').map((kw) => kw.trim()).filter(Boolean);
-				const jobsRes = await fetch(`${API_BASE_URL}/jobs`, {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					credentials: 'include',
-					body: JSON.stringify({
-						postedAt: 7,
-						companies: data.companies,
-						jobTitles: roleKeywordsArray,
-						remote: null,
-					}),
-				});
-				const jobsData: JobsByWishlistResponse = await jobsRes.json();
-
-				if (jobsRes.ok && jobsData.success) {
-    				setJobsByCompany(jobsData.results);
-					setSuccess(true);
-					setTimeout(() => setSuccess(false), 5000);
-				} else {
-					console.error('❌ Failed to fetch jobs:', jobsData);
-					setError(true);
-					setTimeout(() => setError(false), 5000);
-				}
-			} else {
-				console.error('❌ Failed to generate wishlist:', data);
-				setError(true);
-				setTimeout(() => setError(false), 5000);
-			}
+				await fetchJobs(data.companies);
+				setSuccess(true);
+				setTimeout(() => setSuccess(false), 5000);
+			} 
 		} catch (err) {
 			console.error('❌ Error generating wishlist:', err);
 			setError(true);
@@ -302,6 +307,13 @@ const WishlistGenerator = () => {
 				{error && (
 					<div className="error-box">
 						<p>❌ Failed to generate wishlist. Please try again.</p>
+					</div>
+				)}
+
+				{jobsError && (
+					<div className="error-box">
+						<p>⚠️ Couldn't load job roles. </p>
+						<button type='button' onClick={() => fetchJobs(wishlistCompanies)}>Retry</button> 
 					</div>
 				)}
 
