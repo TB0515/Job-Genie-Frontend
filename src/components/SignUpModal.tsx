@@ -10,12 +10,16 @@ interface SignUpModalProps {
 	onSwitchToLogin: () => void;
 }
 
-const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalProps) => {
+const SignUpModal = ({
+	isOpen,
+	onClose,
+	onSwitchToLogin,
+}: SignUpModalProps) => {
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
 		password: '',
-        phone: '',
+		phone: '',
 	});
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
@@ -53,12 +57,14 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalProps) => 
 
 		try {
 			await signup({
-                name: formData.name,
-                email: formData.email,
-                password: formData.password,
-                phone: Number(formData.phone),
-            });
-			setSuccess('Account created successfully! Please check your email to verify.');
+				name: formData.name,
+				email: formData.email,
+				password: formData.password,
+				phone: Number(formData.phone),
+			});
+			setSuccess(
+				'Account created successfully! Please check your email to verify.'
+			);
 			setFormData({ name: '', email: '', password: '', phone: '' });
 
 			// Switch to login after 2 seconds
@@ -84,7 +90,9 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalProps) => 
 	return (
 		<div className="modal" onClick={handleClose}>
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
-				<span className="close" onClick={handleClose}>&times;</span>
+				<span className="close" onClick={handleClose}>
+					&times;
+				</span>
 				<h2>Create Account</h2>
 				<form onSubmit={handleSubmit}>
 					<div className="form-group">
@@ -121,19 +129,27 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }: SignUpModalProps) => 
 							minLength={6}
 						/>
 					</div>
-                    <div className="form-group">
-                        <label htmlFor="signup-phone">Phone Number</label>
-                        <input
-                            type="tel"
-                            id="signup-phone"
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-					{error && <div className="error-message" style={{ display: 'block' }}>{error}</div>}
-					{success && <div className="success-message" style={{ display: 'block' }}>{success}</div>}
+					<div className="form-group">
+						<label htmlFor="signup-phone">Phone Number</label>
+						<input
+							type="tel"
+							id="signup-phone"
+							name="phone"
+							value={formData.phone}
+							onChange={handleChange}
+							required
+						/>
+					</div>
+					{error && (
+						<div className="error-message" style={{ display: 'block' }}>
+							{error}
+						</div>
+					)}
+					{success && (
+						<div className="success-message" style={{ display: 'block' }}>
+							{success}
+						</div>
+					)}
 					<div className="form-actions">
 						<button type="submit" disabled={loading}>
 							{loading ? 'Signing up...' : 'Sign Up'}

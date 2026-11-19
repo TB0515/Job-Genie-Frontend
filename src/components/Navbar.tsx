@@ -15,7 +15,8 @@ const Navbar = () => {
 		// Initialize Google Sign-In
 		if (typeof google !== 'undefined' && google.accounts) {
 			google.accounts.id.initialize({
-				client_id: '1053566652974-hubbhc366hubee59f4a8fdfek1lif8qb.apps.googleusercontent.com',
+				client_id:
+					'1053566652974-hubbhc366hubee59f4a8fdfek1lif8qb.apps.googleusercontent.com',
 				callback: handleGoogleCallback,
 				use_fedcm_for_prompt: false,
 			});
@@ -53,7 +54,11 @@ const Navbar = () => {
 					<div className="container">
 						<div className="web-items">
 							<div className="website-name">
-								<img src="/src/assets/Logo.png" alt="JobGenie Logo" className="logo" />
+								<img
+									src="/src/assets/Logo.png"
+									alt="JobGenie Logo"
+									className="logo"
+								/>
 								<h1>JobGenie</h1>
 							</div>
 							{/* <nav className="nav-links">
@@ -75,10 +80,16 @@ const Navbar = () => {
 								</>
 							) : (
 								<>
-									<button className="loginBtn" onClick={() => setShowLogin(true)}>
+									<button
+										className="loginBtn"
+										onClick={() => setShowLogin(true)}
+									>
 										Login
 									</button>
-									<button className="signUpBtn" onClick={() => setShowSignUp(true)}>
+									<button
+										className="signUpBtn"
+										onClick={() => setShowSignUp(true)}
+									>
 										Sign Up
 									</button>
 									<div className="navbar-google-signin"></div>

@@ -77,7 +77,9 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) => {
 	return (
 		<div className="modal" onClick={handleClose}>
 			<div className="modal-content" onClick={(e) => e.stopPropagation()}>
-				<span className="close" onClick={handleClose}>&times;</span>
+				<span className="close" onClick={handleClose}>
+					&times;
+				</span>
 				<h2>Login</h2>
 				<form onSubmit={handleSubmit}>
 					<div className="form-group">
@@ -102,8 +104,16 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignUp }: LoginModalProps) => {
 							required
 						/>
 					</div>
-					{error && <div className="error-message" style={{ display: 'block' }}>{error}</div>}
-					{success && <div className="success-message" style={{ display: 'block' }}>{success}</div>}
+					{error && (
+						<div className="error-message" style={{ display: 'block' }}>
+							{error}
+						</div>
+					)}
+					{success && (
+						<div className="success-message" style={{ display: 'block' }}>
+							{success}
+						</div>
+					)}
 					<div className="form-actions">
 						<button type="submit" disabled={loading}>
 							{loading ? 'Logging in...' : 'Login'}
