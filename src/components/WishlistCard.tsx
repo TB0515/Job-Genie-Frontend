@@ -20,7 +20,12 @@ interface WishlistCardProps {
 	onClick?: () => void;
 }
 
-const WishlistCard = ({ company, onDelete, jobCount = 0, onClick }: WishlistCardProps) => {
+const WishlistCard = ({
+	company,
+	onDelete,
+	jobCount = 0,
+	onClick,
+}: WishlistCardProps) => {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 	const [logoError, setLogoError] = useState(false);
 
@@ -47,10 +52,12 @@ const WishlistCard = ({ company, onDelete, jobCount = 0, onClick }: WishlistCard
 
 	return (
 		<>
-			<div className="wishlist-card" onClick={() => {
-        		console.log('Card clicked', company.name);
-          		onClick && onClick();
-        		}}
+			<div
+				className="wishlist-card"
+				onClick={() => {
+					console.log('Card clicked', company.name);
+					onClick && onClick();
+				}}
 			>
 				{/* Logo Section */}
 				<div className="wishlist-card-logo">
@@ -124,16 +131,16 @@ const WishlistCard = ({ company, onDelete, jobCount = 0, onClick }: WishlistCard
 						>
 							🌐 Visit Website →
 						</a>
-					</div>	
+					</div>
 				</div>
 				{/* Job Count */}
 				<div className="wishlist-card-footer">
 					<button
 						className="jobs-count-btn"
 						onClick={(e) => {
-						e.stopPropagation();   // don't trigger whole-card click
-						console.log('Job roles button clicked', company.name);
-						onClick && onClick();  // open jobs modal in parent
+							e.stopPropagation(); // don't trigger whole-card click
+							console.log('Job roles button clicked', company.name);
+							onClick && onClick(); // open jobs modal in parent
 						}}
 					>
 						Job roles: {jobCount}
@@ -144,10 +151,7 @@ const WishlistCard = ({ company, onDelete, jobCount = 0, onClick }: WishlistCard
 			{/* Delete Confirmation Dialog */}
 			{showDeleteDialog && (
 				<div className="delete-dialog-overlay" onClick={handleCancelDelete}>
-					<div
-						className="delete-dialog"
-						onClick={(e) => e.stopPropagation()}
-					>
+					<div className="delete-dialog" onClick={(e) => e.stopPropagation()}>
 						<div className="dialog-icon">⚠️</div>
 						<h3>Remove from Wishlist?</h3>
 						<p>

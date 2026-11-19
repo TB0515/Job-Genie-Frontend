@@ -28,22 +28,22 @@ interface WishlistResponse {
 }
 
 interface TheirStackJob {
-  id: number | string;
-  job_title: string;
-  company_name: string;
-  location?: string;
-  url: string;
-  date_posted?: string;
-  job_seniority?: string;
+	id: number | string;
+	job_title: string;
+	company_name: string;
+	location?: string;
+	url: string;
+	date_posted?: string;
+	job_seniority?: string;
 }
 
 interface JobsByWishlistResponse {
-  success: boolean;
-  results: {
-    company: string;
-    jobs: TheirStackJob[];
-  }[];
-};
+	success: boolean;
+	results: {
+		company: string;
+		jobs: TheirStackJob[];
+	}[];
+}
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
@@ -58,25 +58,32 @@ const WishlistGenerator = () => {
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState(false);
 	const [wishlistCompanies, setWishlistCompanies] = useState<Company[]>([]);
-	const [jobsByCompany, setJobsByCompany] = useState<{ company: string; jobs: TheirStackJob[] }[]>([]);
+	const [jobsByCompany, setJobsByCompany] = useState<
+		{ company: string; jobs: TheirStackJob[] }[]
+	>([]);
 	const [jobsError, setJobsError] = useState(false);
-	const [roleKeywords, setRoleKeywords] = useState('software engineer, developer');
+	const [roleKeywords, setRoleKeywords] = useState(
+		'software engineer, developer'
+	);
 	const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
 	const [isJobsModalOpen, setIsJobsModalOpen] = useState(false);
 
 	const fetchJobs = async (companies: Company[]) => {
 		setJobsError(false);
-		const roleKeywordsArray = roleKeywords.split(',').map((kw) => kw.trim()).filter(Boolean);
+		const roleKeywordsArray = roleKeywords
+			.split(',')
+			.map((kw) => kw.trim())
+			.filter(Boolean);
 		try {
 			const jobsRes = await fetch(`${API_BASE_URL}/jobs`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json'},
+				headers: { 'Content-Type': 'application/json' },
 				credentials: 'include',
 				body: JSON.stringify({
 					postedAt: 7,
 					companies,
-                    jobTitles: roleKeywordsArray,
-                    remote: null,
+					jobTitles: roleKeywordsArray,
+					remote: null,
 				}),
 			});
 			const jobsData: JobsByWishlistResponse = await jobsRes.json();
@@ -88,7 +95,7 @@ const WishlistGenerator = () => {
 			}
 		} catch (err) {
 			console.error('Error fetching jobs:', err);
-            setJobsError(true);
+			setJobsError(true);
 		}
 	};
 
@@ -132,7 +139,7 @@ const WishlistGenerator = () => {
 				await fetchJobs(data.companies);
 				setSuccess(true);
 				setTimeout(() => setSuccess(false), 5000);
-			} 
+			}
 		} catch (err) {
 			console.error('❌ Error generating wishlist:', err);
 			setError(true);
@@ -150,11 +157,12 @@ const WishlistGenerator = () => {
 	};
 
 	const getJobCountForCompany = (companyName: string) => {
-  		const group = jobsByCompany.find(
-    		(g) => g.company.toLowerCase().includes(companyName.toLowerCase()) ||
-    		companyName.toLowerCase().includes(g.company.toLowerCase())
-  		);
-  		return group ? group.jobs.length : 0;
+		const group = jobsByCompany.find(
+			(g) =>
+				g.company.toLowerCase().includes(companyName.toLowerCase()) ||
+				companyName.toLowerCase().includes(g.company.toLowerCase())
+		);
+		return group ? group.jobs.length : 0;
 	};
 
 	const handleCompanyClick = (company: Company) => {
@@ -195,12 +203,18 @@ const WishlistGenerator = () => {
 								<option value="Cybersecurity">Cybersecurity</option>
 								<option value="Cloud Computing">Cloud Computing</option>
 								<option value="Biotechnology">Biotechnology</option>
-								<option value="Education Technology">Education Technology</option>
+								<option value="Education Technology">
+									Education Technology
+								</option>
 								<option value="HealthTech">HealthTech</option>
 								<option value="IT">IT</option>
-								<option value="Artificial Intelligence">Artificial Intelligence</option>
+								<option value="Artificial Intelligence">
+									Artificial Intelligence
+								</option>
 								<option value="Blockchain">Blockchain</option>
-								<option value="Internet of Things">Internet of Things (IoT)</option>
+								<option value="Internet of Things">
+									Internet of Things (IoT)
+								</option>
 								<option value="Robotics">Robotics</option>
 								<option value="AR/VR">AR/VR</option>
 								<option value="Quantum Computing">Quantum Computing</option>
@@ -217,7 +231,9 @@ const WishlistGenerator = () => {
 								id="size"
 								name="size"
 								value={filters.size}
-								onChange={(e) => setFilters({ ...filters, size: e.target.value })}
+								onChange={(e) =>
+									setFilters({ ...filters, size: e.target.value })
+								}
 							>
 								<option value="">All Sizes</option>
 								<option value="1-50">1-50 employees</option>
@@ -234,7 +250,9 @@ const WishlistGenerator = () => {
 								id="city"
 								name="city"
 								value={filters.city}
-								onChange={(e) => setFilters({ ...filters, city: e.target.value })}
+								onChange={(e) =>
+									setFilters({ ...filters, city: e.target.value })
+								}
 							>
 								<option value="">All Cities</option>
 								<option value="London">London</option>
@@ -277,10 +295,11 @@ const WishlistGenerator = () => {
 							/>
 						</div>
 					</div>
-					
 
 					<button type="submit" className="generate-btn" disabled={loading}>
-						<span className={loading ? 'btn-hidden' : ''}>Generate Wishlist</span>
+						<span className={loading ? 'btn-hidden' : ''}>
+							Generate Wishlist
+						</span>
 						{loading && <span className="btn-loader">Generating...</span>}
 					</button>
 				</form>
@@ -313,7 +332,9 @@ const WishlistGenerator = () => {
 				{jobsError && (
 					<div className="error-box">
 						<p>⚠️ Couldn't load job roles. </p>
-						<button type='button' onClick={() => fetchJobs(wishlistCompanies)}>Retry</button> 
+						<button type="button" onClick={() => fetchJobs(wishlistCompanies)}>
+							Retry
+						</button>
 					</div>
 				)}
 
@@ -326,7 +347,9 @@ const WishlistGenerator = () => {
 								{wishlistCompanies.length}{' '}
 								{wishlistCompanies.length === 1 ? 'company' : 'companies'} found
 							</p>
-							<p className="results-note">Job counts show UK roles posted in the last 7 days.</p>
+							<p className="results-note">
+								Job counts show UK roles posted in the last 7 days.
+							</p>
 						</div>
 						<div className="wishlist-cards-container">
 							{wishlistCompanies.map((company) => (
@@ -364,21 +387,25 @@ const WishlistGenerator = () => {
 								{(() => {
 									const group = jobsByCompany.find(
 										(g) =>
-											g.company.toLowerCase().includes(selectedCompany.name.toLowerCase()) ||
-											selectedCompany.name.toLowerCase().includes(g.company.toLowerCase())
+											g.company
+												.toLowerCase()
+												.includes(selectedCompany.name.toLowerCase()) ||
+											selectedCompany.name
+												.toLowerCase()
+												.includes(g.company.toLowerCase())
 									);
 									const jobs = group ? group.jobs : [];
-									
+
 									if (jobs.length === 0) {
 										return <p>No matching roles posted in the last 7 days.</p>;
 									}
-									
+
 									return (
 										<ul className="jobs-modal-list">
 											{jobs.map((job) => (
 												<li key={job.id} className="jobs-modal-item">
 													<a href={job.url} target="_blank" rel="noreferrer">
-													{job.job_title}
+														{job.job_title}
 													</a>{' '}
 													– {job.location ?? 'Location not specified'} –{' '}
 													{job.job_seniority ?? 'Seniority N/A'}
