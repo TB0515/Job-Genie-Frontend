@@ -242,7 +242,6 @@ const WishlistGenerator = () => {
 								<option value="Liverpool">Liverpool</option>
 								<option value="Cambridge">Cambridge</option>
 								<option value="Oxford">Oxford</option>
-								<option value="Dublin">Dublin</option>
 							</select>
 						</div>
 
@@ -315,6 +314,7 @@ const WishlistGenerator = () => {
 								{wishlistCompanies.length}{' '}
 								{wishlistCompanies.length === 1 ? 'company' : 'companies'} found
 							</p>
+							<p className="results-note">Job counts show UK roles posted in the last 7 days.</p>
 						</div>
 						<div className="wishlist-cards-container">
 							{wishlistCompanies.map((company) => (
@@ -358,7 +358,7 @@ const WishlistGenerator = () => {
 									const jobs = group ? group.jobs : [];
 									
 									if (jobs.length === 0) {
-										return <p>No matching roles found for your keywords.</p>;
+										return <p>No matching roles posted in the last 7 days.</p>;
 									}
 									
 									return (
