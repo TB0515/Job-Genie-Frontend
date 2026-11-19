@@ -8,7 +8,7 @@
 		"test:watch": "vitest --watch",
 		"dev": "vite",
 		"preview": "vite preview --host 0.0.0.0 --port ${PORT:-5173}",
-		"build": "tsc && vite build",
+		"build": "tsc --noEmit && vite build",
 		"prepare": "husky"
 	},
 	"repository": {
@@ -40,7 +40,7 @@
 		"vitest": "^4.0.15"
 	},
 	"lint-staged": {
-		"*.{js,ts,json,css,md}": "prettier --write"
+		"*.{js,ts,tsx,json,css,md}": "prettier --write"
 	},
 	"dependencies": {
 		"axios": "^1.13.2",
