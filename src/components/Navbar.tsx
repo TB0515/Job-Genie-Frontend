@@ -3,6 +3,7 @@ import SignUpModal from './SignUpModal';
 import LoginModal from './LoginModal';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Navbar.css';
+import logo from '../assets/Logo.png';
 
 declare const google: any;
 
@@ -54,11 +55,7 @@ const Navbar = () => {
 					<div className="container">
 						<div className="web-items">
 							<div className="website-name">
-								<img
-									src="/src/assets/Logo.png"
-									alt="JobGenie Logo"
-									className="logo"
-								/>
+								<img src={logo} alt="JobGenie Logo" className="logo" />
 								<h1>JobGenie</h1>
 							</div>
 							{/* <nav className="nav-links">
