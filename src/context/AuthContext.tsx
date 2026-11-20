@@ -11,7 +11,7 @@ interface User {
 	name?: string;
 	given_name?: string;
 	email: string;
-	phone?: number | undefined;
+	phone?: string | undefined;
 }
 
 interface AuthContextType {
@@ -28,7 +28,7 @@ interface AuthContextType {
 		name: string;
 		email: string;
 		password: string;
-		phone: number;
+		phone?: string;
 	}) => Promise<void>;
 	logout: () => Promise<void>;
 	checkAuth: () => Promise<void>;
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			name: string;
 			email: string;
 			password: string;
-			phone: number;
+			phone?: string;
 		}) => {
 			setLoading(true);
 			try {

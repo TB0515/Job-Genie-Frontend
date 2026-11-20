@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import WishlistCard from './WishlistCard';
 import './WishlistGenerator.css';
 
@@ -104,7 +104,7 @@ const WishlistGenerator = () => {
 		}
 	};
 
-	const handleSubmit = async (e: FormEvent) => {
+	const handleSubmit = async (e: React.SubmitEvent) => {
 		e.preventDefault();
 		setLoading(true);
 		setSuccess(false);
@@ -206,9 +206,6 @@ const WishlistGenerator = () => {
 								</option>
 								<option value="HealthTech">HealthTech</option>
 								<option value="IT">IT</option>
-								<option value="Artificial Intelligence">
-									Artificial Intelligence
-								</option>
 								<option value="Blockchain">Blockchain</option>
 								<option value="Internet of Things">
 									Internet of Things (IoT)

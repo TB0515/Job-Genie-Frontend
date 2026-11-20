@@ -49,18 +49,19 @@ const SignUpModal = ({
 		});
 	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.SubmitEvent) => {
 		e.preventDefault();
 		setError('');
 		setSuccess('');
 		setLoading(true);
 
+		const phone = formData.phone.trim();
 		try {
 			await signup({
 				name: formData.name,
 				email: formData.email,
 				password: formData.password,
-				phone: Number(formData.phone),
+				...(phone ? { phone } : {}),
 			});
 			setSuccess(
 				'Account created successfully! Please check your email to verify.'
@@ -130,14 +131,13 @@ const SignUpModal = ({
 						/>
 					</div>
 					<div className="form-group">
-						<label htmlFor="signup-phone">Phone Number</label>
+						<label htmlFor="signup-phone">Phone Number (Optional)</label>
 						<input
 							type="tel"
 							id="signup-phone"
 							name="phone"
 							value={formData.phone}
 							onChange={handleChange}
-							required
 						/>
 					</div>
 					{error && (
