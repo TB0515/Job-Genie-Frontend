@@ -16,14 +16,14 @@ interface Company {
 interface WishlistCardProps {
 	company: Company;
 	onDelete: (companyId: string) => void;
-	jobCount?: number;
+	jobCount?: number | undefined;
 	onClick?: () => void;
 }
 
 const WishlistCard = ({
 	company,
 	onDelete,
-	jobCount = 0,
+	jobCount,
 	onClick,
 }: WishlistCardProps) => {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -143,7 +143,7 @@ const WishlistCard = ({
 							onClick && onClick(); // open jobs modal in parent
 						}}
 					>
-						Job roles: {jobCount}
+						Job roles: {jobCount ?? '-'}
 					</button>
 				</div>
 			</div>
