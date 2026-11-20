@@ -84,7 +84,7 @@ const WishlistGenerator = () => {
 				credentials: 'include',
 				body: JSON.stringify({
 					postedAt: 7,
-					companies,
+					companies: companies.map((c) => ({ id: c.id, name: c.name })),
 					jobTitles: roleKeywordsArray,
 					remote: null,
 				}),
