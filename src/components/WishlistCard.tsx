@@ -37,7 +37,8 @@ const WishlistCard = ({
 	// Get first letter for logo fallback
 	const firstLetter = company.name.charAt(0).toUpperCase();
 
-	const handleDeleteClick = () => {
+	const handleDeleteClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		setShowDeleteDialog(true);
 	};
 
@@ -55,7 +56,6 @@ const WishlistCard = ({
 			<div
 				className="wishlist-card"
 				onClick={() => {
-					console.log('Card clicked', company.name);
 					onClick && onClick();
 				}}
 			>
@@ -128,6 +128,7 @@ const WishlistCard = ({
 							target="_blank"
 							rel="noopener noreferrer"
 							className="website-link"
+							onClick={(e) => e.stopPropagation()}
 						>
 							🌐 Visit Website →
 						</a>
@@ -139,7 +140,6 @@ const WishlistCard = ({
 						className="jobs-count-btn"
 						onClick={(e) => {
 							e.stopPropagation(); // don't trigger whole-card click
-							console.log('Job roles button clicked', company.name);
 							onClick && onClick(); // open jobs modal in parent
 						}}
 					>

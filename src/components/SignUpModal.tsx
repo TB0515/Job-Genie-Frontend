@@ -67,10 +67,10 @@ const SignUpModal = ({
 			);
 			setFormData({ name: '', email: '', password: '', phone: '' });
 
-			// Switch to login after 2 seconds
+			// Switch to login after 5 seconds
 			setTimeout(() => {
 				onSwitchToLogin();
-			}, 2000);
+			}, 5000);
 		} catch (err: any) {
 			setError(err.message || 'Sign up failed. Please try again.');
 		} finally {
