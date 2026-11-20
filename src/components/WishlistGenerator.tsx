@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import WishlistCard from './WishlistCard';
 import './WishlistGenerator.css';
 
@@ -25,6 +25,7 @@ interface WishlistResponse {
 	success: boolean;
 	total: number;
 	companies: Company[];
+	message?: string;
 }
 
 interface TheirStackJob {
@@ -58,6 +59,7 @@ const WishlistGenerator = () => {
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState(false);
 	const [wishlistCompanies, setWishlistCompanies] = useState<Company[]>([]);
+	const [jobsLoading, setJobsLoading] = useState(false);
 	const [jobsByCompany, setJobsByCompany] = useState<
 		{ company: string; jobs: TheirStackJob[] }[]
 	>([]);
@@ -70,6 +72,7 @@ const WishlistGenerator = () => {
 
 	const fetchJobs = async (companies: Company[]) => {
 		setJobsError(false);
+		setJobsLoading(true);
 		const roleKeywordsArray = roleKeywords
 			.split(',')
 			.map((kw) => kw.trim())
@@ -96,28 +99,26 @@ const WishlistGenerator = () => {
 		} catch (err) {
 			console.error('Error fetching jobs:', err);
 			setJobsError(true);
+		} finally {
+			setJobsLoading(false);
 		}
 	};
 
-	const handleSubmit = async (e: FormEvent) => {
+	const handleSubmit = async (e: React.SubmitEvent) => {
 		e.preventDefault();
 		setLoading(true);
 		setSuccess(false);
 		setError(false);
-
+		setWishlistCompanies([]);
 		// Remove empty filters
 		const cleanFilters: Record<string, string> = {};
 		Object.entries(filters).forEach(([key, value]) => {
 			if (value) cleanFilters[key] = value;
 		});
 
-		console.log('🎯 Generating wishlist with filters:', cleanFilters);
-
 		try {
 			const queryParams = new URLSearchParams(cleanFilters).toString();
 			const url = `${API_BASE_URL}/api/wishlist/generate?${queryParams}`;
-
-			console.log('📡 Making request to:', url);
 
 			const response = await fetch(url, {
 				method: 'POST',
@@ -130,15 +131,13 @@ const WishlistGenerator = () => {
 			const data: WishlistResponse = await response.json();
 
 			if (response.ok && data.success) {
-				console.log('✅ Wishlist generated successfully!');
-				console.log(`📊 Total companies: ${data.total}`);
-				console.log('🏢 Companies:', data.companies);
-
 				// Update state with companies
-				setWishlistCompanies(data.companies);
 				await fetchJobs(data.companies);
+				setWishlistCompanies(data.companies);
 				setSuccess(true);
 				setTimeout(() => setSuccess(false), 5000);
+			} else {
+				throw new Error(data.message || 'Failed to generate wishlist');
 			}
 		} catch (err) {
 			console.error('❌ Error generating wishlist:', err);
@@ -150,7 +149,6 @@ const WishlistGenerator = () => {
 	};
 
 	const handleDeleteCompany = (companyId: string) => {
-		console.log('🗑️ Removing company from wishlist:', companyId);
 		setWishlistCompanies((prev) =>
 			prev.filter((company) => company.id !== companyId)
 		);
@@ -208,9 +206,6 @@ const WishlistGenerator = () => {
 								</option>
 								<option value="HealthTech">HealthTech</option>
 								<option value="IT">IT</option>
-								<option value="Artificial Intelligence">
-									Artificial Intelligence
-								</option>
 								<option value="Blockchain">Blockchain</option>
 								<option value="Internet of Things">
 									Internet of Things (IoT)
@@ -331,9 +326,14 @@ const WishlistGenerator = () => {
 
 				{jobsError && (
 					<div className="error-box">
-						<p>⚠️ Couldn't load job roles. </p>
-						<button type="button" onClick={() => fetchJobs(wishlistCompanies)}>
-							Retry
+						<p>⚠️ Couldn't load job roles, but here's your company list.</p>
+						<button
+							type="button"
+							className="retry-button"
+							disabled={jobsLoading}
+							onClick={() => fetchJobs(wishlistCompanies)}
+						>
+							{jobsLoading ? 'Retrying...' : 'Retry'}
 						</button>
 					</div>
 				)}
@@ -356,7 +356,11 @@ const WishlistGenerator = () => {
 								<WishlistCard
 									key={company.id}
 									company={company}
-									jobCount={getJobCountForCompany(company.name)}
+									jobCount={
+										jobsLoading || jobsError
+											? undefined
+											: getJobCountForCompany(company.name)
+									}
 									onClick={() => handleCompanyClick(company)}
 									onDelete={handleDeleteCompany}
 								/>
@@ -395,7 +399,11 @@ const WishlistGenerator = () => {
 												.includes(g.company.toLowerCase())
 									);
 									const jobs = group ? group.jobs : [];
-
+									if (jobsError) {
+										return (
+											<p> Job roles couldn't be loaded. Use Retry above.</p>
+										);
+									}
 									if (jobs.length === 0) {
 										return <p>No matching roles posted in the last 7 days.</p>;
 									}

@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import { useAuth } from './context/AuthContext';
 import WishlistGenerator from './components/WishlistGenerator';
@@ -6,9 +5,6 @@ import WishlistGenerator from './components/WishlistGenerator';
 import './App.css';
 
 function App() {
-	// State management
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string>('');
 	const { user, loading: authLoading } = useAuth();
 
 	if (authLoading) {
@@ -35,11 +31,6 @@ function App() {
 						Please <strong>sign in</strong> to generate your wishlist of dream
 						companies and track open roles.
 					</p>
-					<div className="signin-prompt">
-						<a href="/auth/signin" className="signin-btn">
-							Get Started → Sign In
-						</a>
-					</div>
 				</div>
 			)}
 		</div>

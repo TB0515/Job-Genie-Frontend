@@ -16,14 +16,14 @@ interface Company {
 interface WishlistCardProps {
 	company: Company;
 	onDelete: (companyId: string) => void;
-	jobCount?: number;
+	jobCount?: number | undefined;
 	onClick?: () => void;
 }
 
 const WishlistCard = ({
 	company,
 	onDelete,
-	jobCount = 0,
+	jobCount,
 	onClick,
 }: WishlistCardProps) => {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -37,7 +37,8 @@ const WishlistCard = ({
 	// Get first letter for logo fallback
 	const firstLetter = company.name.charAt(0).toUpperCase();
 
-	const handleDeleteClick = () => {
+	const handleDeleteClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		setShowDeleteDialog(true);
 	};
 
@@ -55,7 +56,6 @@ const WishlistCard = ({
 			<div
 				className="wishlist-card"
 				onClick={() => {
-					console.log('Card clicked', company.name);
 					onClick && onClick();
 				}}
 			>
@@ -128,6 +128,7 @@ const WishlistCard = ({
 							target="_blank"
 							rel="noopener noreferrer"
 							className="website-link"
+							onClick={(e) => e.stopPropagation()}
 						>
 							🌐 Visit Website →
 						</a>
@@ -139,11 +140,10 @@ const WishlistCard = ({
 						className="jobs-count-btn"
 						onClick={(e) => {
 							e.stopPropagation(); // don't trigger whole-card click
-							console.log('Job roles button clicked', company.name);
 							onClick && onClick(); // open jobs modal in parent
 						}}
 					>
-						Job roles: {jobCount}
+						Job roles: {jobCount ?? '-'}
 					</button>
 				</div>
 			</div>

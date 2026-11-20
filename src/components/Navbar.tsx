@@ -13,15 +13,14 @@ const Navbar = () => {
 	const { user, login, logout, isAuthenticated } = useAuth();
 
 	useEffect(() => {
-		// Initialize Google Sign-In
-		if (typeof google !== 'undefined' && google.accounts) {
+		// Setup Google Sign-In
+		const setupGoogle = () => {
 			google.accounts.id.initialize({
 				client_id:
 					'1053566652974-hubbhc366hubee59f4a8fdfek1lif8qb.apps.googleusercontent.com',
 				callback: handleGoogleCallback,
 				use_fedcm_for_prompt: false,
 			});
-
 			// Render Google Sign-In button in navbar
 			const googleBtn = document.querySelector('.navbar-google-signin');
 			if (googleBtn && !isAuthenticated) {
@@ -30,7 +29,15 @@ const Navbar = () => {
 					size: 'medium',
 				});
 			}
+		};
+		//google script loaded
+		if (typeof google !== 'undefined' && google.accounts) {
+			setupGoogle();
+			return;
 		}
+		const script = document.getElementById('google-gsi');
+		script?.addEventListener('load', setupGoogle);
+		return () => script?.removeEventListener('load', setupGoogle);
 	}, [isAuthenticated]);
 
 	const handleGoogleCallback = async (response: { credential: string }) => {

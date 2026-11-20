@@ -11,7 +11,7 @@ interface User {
 	name?: string;
 	given_name?: string;
 	email: string;
-	phone?: number | undefined;
+	phone?: string | undefined;
 }
 
 interface AuthContextType {
@@ -28,7 +28,7 @@ interface AuthContextType {
 		name: string;
 		email: string;
 		password: string;
-		phone: number;
+		phone?: string;
 	}) => Promise<void>;
 	logout: () => Promise<void>;
 	checkAuth: () => Promise<void>;
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				}
 				const data = await response.json();
 				if (!response.ok || data.ok === false || data.success === false) {
-					throw new Error(data.error || 'Login failed');
+					throw new Error(data.message || data.error || 'Login failed');
 				}
 
 				const userData = data.user || data;
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			name: string;
 			email: string;
 			password: string;
-			phone: number;
+			phone?: string;
 		}) => {
 			setLoading(true);
 			try {
@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				const result = await response.json();
 
 				if (!response.ok) {
-					throw new Error(result.error || 'Signup failed');
+					throw new Error(result.message || result.error || 'Signup failed');
 				}
 			} catch (error) {
 				console.error('Signup error:', error);
